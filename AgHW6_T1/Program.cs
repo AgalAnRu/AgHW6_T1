@@ -19,7 +19,16 @@ namespace AgHW6_T1
         static string GetSentence()
         {
             string userString = string.Empty;
-            //input string
+            char userChar;
+            ConsoleKeyInfo cki = new ConsoleKeyInfo();
+            Console.WriteLine("Введите предложение:");
+            do
+            {
+                cki = Console.ReadKey();
+                if (IsLegacyChar(cki.KeyChar))
+                userString += cki.KeyChar.ToString();   
+            }
+            while (cki.Key != ConsoleKey.Enter);
             return userString;
         }
         static int GetNumberChar()
@@ -41,6 +50,11 @@ namespace AgHW6_T1
         {
             //find
             //print
+        }
+        static bool IsLegacyChar(char ch)
+        {
+            //IsLegacy?
+            return true;
         }
     }
 }
