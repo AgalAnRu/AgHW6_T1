@@ -57,6 +57,7 @@ namespace AgHW6_T1
                     Console.Write(userChar);
                     charsToFind[i] = userChar; 
                 }
+                //Ентер возвращает в начало строки!
             }
             return charsToFind;
         }
