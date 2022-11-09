@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AgHW6_T1
 {
@@ -7,8 +8,7 @@ namespace AgHW6_T1
         static void Main(string[] args)
         {
             string sentence = GetSentence();
-            int numberChar = GetNumberChar();
-            char[] charToFind = GetCharsToFind(numberChar);
+            List<char> charToFind = GetCharsToFind();
             PrintResult(sentence, charToFind);
             Console.ReadKey();
         }
@@ -37,55 +37,56 @@ namespace AgHW6_T1
             Console.WriteLine();
             return userString;
         }
-        static int GetNumberChar()
+        static List<char> GetCharsToFind()
         {
-            int numberChar = GetInt32("Введите количество символов для поиска", minValue: 1, maxValue: 100);
-            return numberChar;
-        }
-        static char[] GetCharsToFind(int arrayLength)
-        {
+            List<char> charsToFind = new List<char>();
             char userChar;
-            char[] charsToFind = new char[arrayLength];
-            Console.WriteLine($"Введите {arrayLength} символов для поиска");
-            for (int i = 0; i < charsToFind.Length; i++)
+            ConsoleKeyInfo cki = new ConsoleKeyInfo();
+            Console.WriteLine("Введите символы для поиска и нажмите Enter:");
+            do
             {
-                userChar = Console.ReadKey(true).KeyChar;
-                if (!IsLegacyChar(userChar))
-                    i--;
-                else
+                cki = Console.ReadKey(true);
+                userChar = cki.KeyChar;
+                if (cki.Key == ConsoleKey.Enter)
+                    continue;
+                if (IsLegacyChar(userChar))
                 {
+                    charsToFind.Add(userChar);
                     Console.Write(userChar);
-                    charsToFind[i] = userChar; 
                 }
-                //Ентер возвращает в начало строки!
             }
+            while (cki.Key != ConsoleKey.Enter || charsToFind.Count == 0);
+            Console.WriteLine();
             return charsToFind;
         }
-        static void PrintResult(string sentense, char[] charToFind)
+        static void PrintResult(string sentense, List<char> charToFind)
         {
-            //find
-            //print
+            int numberChars = 0;
+            Console.WriteLine("Количество вхождений символов:");
+            foreach (char ch in charToFind)
+            {
+                numberChars = GetNumberChars(sentense, ch);
+                Console.WriteLine($"{ch} - {numberChars}");
+            }
+        }
+        static int GetNumberChars(string sentense, char ch)
+        {
+            int numberChars = 0;
+            int lastCharIndex = - 1;
+            do
+            {
+                lastCharIndex = sentense.IndexOf(ch, lastCharIndex + 1);
+                if (lastCharIndex != -1)
+                    numberChars++;
+            }
+            while (lastCharIndex != -1);
+            return numberChars;
         }
         static bool IsLegacyChar(char ch)
         {
             if (Char.IsLetter(ch) || Char.IsPunctuation(ch) || Char.IsWhiteSpace(ch))
                 return true;
             return false;
-        }
-        static int GetInt32(string prompt = "", int minValue = Int32.MinValue, int maxValue = Int32.MaxValue)
-        {
-            string inputStr = string.Empty;
-            while (true)
-            {
-                Console.WriteLine($"Введите {prompt}");
-                Console.Write($"(Целое число от {minValue} до {maxValue}): ");
-                inputStr = Console.ReadLine();
-                if (int.TryParse(inputStr, out int value))
-                    if (value >= minValue && value <= maxValue)
-                    {
-                        return value;
-                    }
-            }
         }
     }
 }
